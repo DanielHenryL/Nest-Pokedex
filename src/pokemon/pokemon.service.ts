@@ -13,10 +13,10 @@ export class PokemonService {
     private readonly pokemonModel: Model<Pokemon>
   ){}
 
+  //* Create Pokemon
   async create(createPokemonDto: CreatePokemonDto) {
 
     try {
-
       createPokemonDto.name = createPokemonDto.name.toLocaleLowerCase();
       const pokemon = await this.pokemonModel.create( createPokemonDto );
       return pokemon;
@@ -26,10 +26,12 @@ export class PokemonService {
     }
   }
 
+  //* Total Pokemon
   findAll() {
-    return `This action returns all pokemon`;
+    return this.pokemonModel.find();
   }
 
+  //* Pokemon By Id
   async findOne( term: string ) {
 
     let pokemon:Pokemon;
@@ -51,13 +53,12 @@ export class PokemonService {
     return pokemon;
   }
 
+  //* Update Pokemon
   async update(id: string, updatePokemonDto: UpdatePokemonDto) {
     
-    if ( updatePokemonDto.name ) {
-      updatePokemonDto.name = updatePokemonDto.name.toLocaleLowerCase();
-    }
     try {
 
+      updatePokemonDto.name = updatePokemonDto.name.toLocaleLowerCase();
       const pokemon = await this.pokemonModel.findByIdAndUpdate( id, updatePokemonDto, {new:true} )
       return pokemon;   
 
@@ -66,10 +67,16 @@ export class PokemonService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} pokemon`;
+  async remove(id: string) {
+    try {
+      const pokemon = await this.pokemonModel.findByIdAndDelete(id, { new: true })
+      return pokemon;
+    } catch (error) {
+      console.log( error );
+    }
   }
 
+  //* Control de exception 11000
   private handleException( error:any){
     if ( error.code === 11000 ) {
       throw new BadRequestException(`Pokemon exists in db ${ JSON.stringify( error.keyValue )}`);
