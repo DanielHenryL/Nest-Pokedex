@@ -22,10 +22,7 @@ export class PokemonService {
       return pokemon;
       
     } catch (error) {
-      if ( error.code === 11000) {
-        throw new BadRequestException(`Pokemon exists in db ${ JSON.stringify( error.keyValue )}`);
-      }
-      throw new InternalServerErrorException(`Can't create pokemon - cheack server logs`);
+      this.handleException(error);
     }
   }
 
@@ -33,8 +30,10 @@ export class PokemonService {
     return `This action returns all pokemon`;
   }
 
-  async findOne(term: string) {
-    let pokemon: Pokemon;
+  async findOne( term: string ) {
+
+    let pokemon:Pokemon;
+
     if ( !isNaN(+term)) {
       pokemon = await this.pokemonModel.findOne({ no: term });
     }
@@ -52,11 +51,29 @@ export class PokemonService {
     return pokemon;
   }
 
-  update(id: number, updatePokemonDto: UpdatePokemonDto) {
-    return `This action updates a #${id} pokemon`;
+  async update(id: string, updatePokemonDto: UpdatePokemonDto) {
+    
+    if ( updatePokemonDto.name ) {
+      updatePokemonDto.name = updatePokemonDto.name.toLocaleLowerCase();
+    }
+    try {
+
+      const pokemon = await this.pokemonModel.findByIdAndUpdate( id, updatePokemonDto, {new:true} )
+      return pokemon;   
+
+    } catch (error) {
+      this.handleException(error);
+    }
   }
 
   remove(id: number) {
     return `This action removes a #${id} pokemon`;
+  }
+
+  private handleException( error:any){
+    if ( error.code === 11000 ) {
+      throw new BadRequestException(`Pokemon exists in db ${ JSON.stringify( error.keyValue )}`);
+    }
+    throw new InternalServerErrorException(`Can't update pokemon - cheack server logs`);
   }
 }
