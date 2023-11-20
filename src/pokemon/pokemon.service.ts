@@ -59,7 +59,7 @@ export class PokemonService {
     try {
 
       updatePokemonDto.name = updatePokemonDto.name.toLocaleLowerCase();
-      const pokemon = await this.pokemonModel.findByIdAndUpdate( id, updatePokemonDto, {new:true} )
+      const pokemon = await this.pokemonModel.findByIdAndUpdate( id, updatePokemonDto, { new: true } )
       return pokemon;   
 
     } catch (error) {
