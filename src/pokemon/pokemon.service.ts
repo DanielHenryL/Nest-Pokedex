@@ -36,6 +36,7 @@ export class PokemonService {
 
     let pokemon:Pokemon;
 
+    // no
     if ( !isNaN(+term)) {
       pokemon = await this.pokemonModel.findOne({ no: term });
     }
@@ -67,6 +68,7 @@ export class PokemonService {
     }
   }
 
+  //* Eliminar Pokemon
   async remove(id: string) {
    
     const pokemon = await this.pokemonModel.findByIdAndDelete(id, { new: true })

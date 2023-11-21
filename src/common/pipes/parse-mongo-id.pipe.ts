@@ -10,3 +10,5 @@ export class ParseMongoIdPipe implements PipeTransform {
     return value;
   }
 }
+//! comando para crear pipes
+//? nest g pipe common/pipes/parseMongoId --no-spec --flat
